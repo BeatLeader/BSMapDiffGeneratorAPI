@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="beatleader-parser\**" />
+    <Compile Remove="BSMapDiffGenerator\**" />
+    <Content Remove="beatleader-parser\**" />
+    <Content Remove="BSMapDiffGenerator\**" />
+    <EmbeddedResource Remove="beatleader-parser\**" />
+    <EmbeddedResource Remove="BSMapDiffGenerator\**" />
+    <None Remove="beatleader-parser\**" />
+    <None Remove="BSMapDiffGenerator\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="beatleader-parser\beatleader-parser\Parser.csproj" />
+    <ProjectReference Include="BSMapDiffGenerator\BSMapDiffGenerator\BSMapDiffGenerator.csproj" />
+  </ItemGroup>
+
+</Project>

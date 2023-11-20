@@ -1,0 +1,6 @@
+[submodule "BSMapDiffGenerator"]
+	path = BSMapDiffGenerator
+	url = https://github.com/BeatLeader/BSMapDiffGenerator.git
+[submodule "beatleader-parser"]
+	path = beatleader-parser
+	url = https://github.com/BeatLeader/beatleader-parser.git
