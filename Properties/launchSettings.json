@@ -13,7 +13,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "mapscompare/text?oldMapLink=https%3A%2F%2Fcdn.assets.beatleader.xyz%2FPlay_Me_Like_That_Video_Game_OLD.zip&newMapLink=https%3A%2F%2Fcdn.assets.beatleader.xyz%2FPlay_Me_Like_That_Video_Game_NEW.zip",
       "applicationUrl": "http://localhost:5128",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -23,7 +23,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "mapscompare\/text?oldMapLink=https%3A%2F%2Fcdn.assets.beatleader.xyz%2FPlay_Me_Like_That_Video_Game_OLD.zip&newMapLink=https%3A%2F%2Fcdn.assets.beatleader.xyz%2FPlay_Me_Like_That_Video_Game_NEW.zip",
       "applicationUrl": "https://localhost:7067;http://localhost:5128",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -32,7 +32,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "mapscompare/text?oldMapLink=https%3A%2F%2Fcdn.assets.beatleader.xyz%2FPlay_Me_Like_That_Video_Game_OLD.zip&newMapLink=https%3A%2F%2Fcdn.assets.beatleader.xyz%2FPlay_Me_Like_That_Video_Game_NEW.zip",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
