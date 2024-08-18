@@ -21,7 +21,7 @@ namespace BSMapDiffGeneratorAPI.Controllers
         }
 
         [NonAction]
-        public (List<DiffEntry>?, string?) MapsCompare(string oldMapLink, string newMapLink, string diffToCompare, string charToCompare) {
+        public (List<DiffEntry>?, string?) MapsCompare(string oldMapLink, string newMapLink, string diffToCompare, string charToCompare, bool compareLights) {
             Parse parser = new();
             BeatmapV3? oldMap = parser.TryDownloadLink(oldMapLink).FirstOrDefault();
             BeatmapV3? newMap = parser.TryDownloadLink(newMapLink).FirstOrDefault();
@@ -31,6 +31,12 @@ namespace BSMapDiffGeneratorAPI.Controllers
             }
 
             var diff = MapDiffGenerator.GenerateDifficultyDiff(newMap.Difficulties.First(x => x.Difficulty == diffToCompare && x.Characteristic == charToCompare).Data, oldMap.Difficulties.First(x => x.Difficulty == diffToCompare && x.Characteristic == charToCompare).Data);
+
+            if (!compareLights) {
+                CollectionType[] lightCollections = [CollectionType.Lights, CollectionType.ColorBoostBeatmapEvents, CollectionType.LightColorEventBoxGroups, CollectionType.LightRotationEventBoxGroups, CollectionType.LightTranslationEventBoxGroups];
+                diff = diff.Where(d => !lightCollections.Contains(d.CollectionType)).ToList();
+            }
+
             var description = "";
 
             description += $"Changes --- Total: {diff.Count} | Added: {diff.Count(x => x.Type == DiffType.Added)} | Removed: {diff.Count(x => x.Type == DiffType.Removed)} | Modified: {diff.Count(x => x.Type == DiffType.Modified)}\n";
@@ -96,9 +102,10 @@ namespace BSMapDiffGeneratorAPI.Controllers
             [FromQuery] string oldMapLink, 
             [FromQuery] string newMapLink,
             [FromQuery] string diffToCompare = "ExpertPlus",
-            [FromQuery] string charToCompare = "Standard") {
+            [FromQuery] string charToCompare = "Standard",
+            [FromQuery] bool compareLights = true) {
 
-            (var diff, _) = MapsCompare(oldMapLink, newMapLink, diffToCompare, charToCompare);
+            (var diff, _) = MapsCompare(oldMapLink, newMapLink, diffToCompare, charToCompare, compareLights);
 
             if (diff == null) {
                 return BadRequest("Can't parse maps");
@@ -113,9 +120,10 @@ namespace BSMapDiffGeneratorAPI.Controllers
             [FromQuery] string oldMapLink, 
             [FromQuery] string newMapLink,
             [FromQuery] string diffToCompare = "ExpertPlus",
-            [FromQuery] string charToCompare = "Standard") {
+            [FromQuery] string charToCompare = "Standard",
+            [FromQuery] bool compareLights = true) {
 
-            (_, var description) = MapsCompare(oldMapLink, newMapLink, diffToCompare, charToCompare);
+            (_, var description) = MapsCompare(oldMapLink, newMapLink, diffToCompare, charToCompare, compareLights);
 
             if (description == null) {
                 return BadRequest("Can't parse maps");
