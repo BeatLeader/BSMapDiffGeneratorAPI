@@ -6,6 +6,7 @@ using Parser.Map;
 using Parser.Map.Difficulty.V3.Base;
 using System.Diagnostics;
 using beatleader_parser;
+using System.Text;
 
 namespace BSMapDiffGeneratorAPI.Controllers
 {
@@ -37,9 +38,13 @@ namespace BSMapDiffGeneratorAPI.Controllers
                 diff = diff.Where(d => !lightCollections.Contains(d.CollectionType)).ToList();
             }
 
-            var description = "";
+            var sb = new StringBuilder();
 
-            description += $"Changes --- Total: {diff.Count} | Added: {diff.Count(x => x.Type == DiffType.Added)} | Removed: {diff.Count(x => x.Type == DiffType.Removed)} | Modified: {diff.Count(x => x.Type == DiffType.Modified)}\n";
+            int addedCount = diff.Count(x => x.Type == DiffType.Added);
+            int removedCount = diff.Count(x => x.Type == DiffType.Removed);
+            int modifiedCount = diff.Count(x => x.Type == DiffType.Modified);
+
+            sb.AppendLine($"Changes --- Total: {diff.Count} | Added: {addedCount} | Removed: {removedCount} | Modified: {modifiedCount}");
 
             diff.Sort((x, y) => x.Object.Beats.CompareTo(y.Object.Beats));
 
@@ -48,50 +53,58 @@ namespace BSMapDiffGeneratorAPI.Controllers
                 if (entry.Object is BeatmapColorGridObject cobj)
                 {
                     string color = cobj.Color == 0 ? "Red" : "Blue";
+                    string baseText = $"{cobj.Beats} at x{cobj.x} y{cobj.y} ({color} in {entry.CollectionType})\n";
 
                     switch (entry.Type)
                     {
-                        case (DiffType)0:
-                            description += $"+ Added    {cobj.Beats} at x{cobj.x} y{cobj.y} ({color} in {entry.CollectionType})\n";
+                        case DiffType.Added:
+                            sb.Append($"+ Added    {baseText}");
                             break;
-                        case (DiffType)1:
-                            description += $"- Removed  {cobj.Beats} at x{cobj.x} y{cobj.y} ({color} in {entry.CollectionType})\n";
+                        case DiffType.Removed:
+                            sb.Append($"- Removed  {baseText}");
                             break;
-                        case (DiffType)2:
-                            description += $"/ Modified {cobj.Beats} at x{cobj.x} y{cobj.y} ({color} in {entry.CollectionType})\n";
+                        case DiffType.Modified:
+                            sb.Append($"/ Modified {baseText}");
                             break;
-                        default: break;
+                    }
+                }
+                else if (entry.Object is BeatmapGridObject obj)
+                {
+                    string baseText = $"{obj.Beats} at x {obj.x} y {obj.y} (in {entry.CollectionType})\n";
+
+                    switch (entry.Type)
+                    {
+                        case DiffType.Added:
+                            sb.Append($"+ Added    {baseText}");
+                            break;
+                        case DiffType.Removed:
+                            sb.Append($"- Removed  {baseText}");
+                            break;
+                        case DiffType.Modified:
+                            sb.Append($"/ Modified {baseText}");
+                            break;
                     }
                 }
                 else
                 {
+                    string baseText = $"{entry.Object.Beats} (in {entry.CollectionType})\n";
+
                     switch (entry.Type)
                     {
-                        case (DiffType)0:
-                            if (entry.Object is BeatmapGridObject obj) { 
-                                description += $"+ Added    {obj.Beats} at x {obj.x} y {obj.y} (in {entry.CollectionType})\n";
-                            } else { 
-                                description += $"+ Added    {entry.Object.Beats} (in {entry.CollectionType})\n";
-                            }
+                        case DiffType.Added:
+                            sb.Append($"+ Added    {baseText}");
                             break;
-                        case (DiffType)1:
-                            if (entry.Object is BeatmapGridObject obj2) {
-                                description += $"- Removed  {obj2.Beats} at x {obj2.x} y {obj2.y} (in {entry.CollectionType})\n";
-                            } else {
-                                description += $"- Removed  {entry.Object.Beats} (in {entry.CollectionType})\n";
-                            }
+                        case DiffType.Removed:
+                            sb.Append($"- Removed  {baseText}");
                             break;
-                        case (DiffType)2:
-                            if (entry.Object is BeatmapGridObject obj3) {
-                                description += $"/ Modified {obj3.Beats} at x {obj3.x} y {obj3.y} (in {entry.CollectionType})\n";
-                            } else {
-                                description += $"/ Modified {entry.Object.Beats} (in {entry.CollectionType})\n";
-                            }
+                        case DiffType.Modified:
+                            sb.Append($"/ Modified {baseText}");
                             break;
-                        default: break;
                     }
                 }
             }
+
+            string description = sb.ToString();
 
             return (diff, description);
         }
